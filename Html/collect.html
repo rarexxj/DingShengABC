@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="content-language" content="zh-CN"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="author" content="杭州博采网络科技股份有限公司-高端网站建设-http://www.bocweb.cn"/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>鼎盛银庄</title>
+    <script src="/Html/js/public/jQuery.js"></script>
+    <script src="/Html/js/public/vue.js"></script>
+    <script src="/Html/js/public/main.js"></script>
+    <script src="/Html/js/public/swiper.min.js"></script>
+    <link rel="stylesheet" href="/Html/css/reset.css">
+    <link rel="stylesheet" href="/Html/css/swiper.min.css">
+    <link rel="stylesheet" href="/Html/css/main.css">
+    <link rel="stylesheet" href="/Html/css/collect.css">
+</head>
+<body style="">
+<div class="infoList" id="collect" v-cloak="">
+    <div class="topnavbox">
+        <ul class="navul clearfix">
+            <li class=""><a href="" class="active">消费品</a></li>
+            <li class=""><a href="" class="">预售品</a></li>
+            <li class=""><a href="collectA.html" class="">文章</a></li>
+        </ul>
+    </div>
+    <div class="listmainbox">
+        <div class="main clearfix">
+            <span class="quan fl"></span>
+            <a :href="'informationdetails.html?id='+data.Id" v-for="data in info.ArticleList">
+                <div class="fl img" :style="{backgroundImage:'url('+data.Images[0].RelativePath+')'}"></div>
+                <div class="fl mainright">
+                    <h2 class="maintitle">{{data.Title}}</h2>
+                    <div class="clearfix">
+                        <span class="price fl">￥<i>123</i></span>
+                        <span class="zl fr">重量:<i>1123</i>g</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="width: 100%;height: 1rem;"></div>
+    <div class="clearfix bottom">
+        <div class="all fl">全选</div>
+        <span class="delete fr">删除</span>
+    </div>
+</div>
+
+<!--<div class="new-loading">-->
+<!--<ul class="small-loading">-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--<li></li>-->
+<!--</ul>-->
+<!--</div>-->
+<script src="/Html/js/mjs/collect.js"></script>
+</body>
+
+</html>

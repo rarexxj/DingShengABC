@@ -1,0 +1,210 @@
+﻿@using System.Web.Optimization
+@using BntWeb.Merchant.Models
+@using BntWeb.FileSystems.Media
+@using BntWeb.Security.Identity
+@{
+    ViewBag.Title = MerchantModule.DisplayName;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var isCreate = (bool)ViewBag.IsCreate;
+
+    ViewBag.SubTitle = "编辑商家";
+}
+@model Merchant
+@section Styles {
+    @Styles.Render("~/css/ztree")
+    <style type="text/css">
+        .ace-thumbnails > li {
+            border: 1px solid #ddd;
+        }
+
+        #container {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=sajvlKcq8p0PAizc0DVEaxSWjZOBXeHV">
+    </script>
+}
+<form class="form-horizontal" role="form" method="POST" id="MerchantForm" action="@Url.Action("EditOnPost", "Merchant", new { area = MerchantModule.Area })">
+    <div class="widget-main padding-12 no-padding-left no-padding-right">
+        <div class="widget-header" style="background-color: #fff; background-image: none; border: 0px; border-bottom: 1px solid #DDD;">
+            <div class="widget-toolbar no-border" style="float: left;">
+                <ul class="nav nav-tabs" id="myTab2">
+                    <li class="active">
+                        <a data-toggle="tab" href="#basic">基本信息</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#description">门店位置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="widget-body" style="border: 0px;">
+            <div class="widget-main padding-12 no-padding-left no-padding-right">
+                <div class="tab-content padding-4">
+                    <div id="basic" class="tab-pane in active">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right"> 门店主图 </label>
+                            <div class="col-sm-8 image">
+                                <div class="col-sm-10">
+                                    @Html.Action("UploadPartial", "File", new { area = "SystemSettings", controlId = "MerchantImage", sourceId = Model.Id, moduleKey = MerchantModule.Key, sourceType = "MerchantImage", fileType = FileType.Image, isPublic = true, mediumThumbnailHeight = 500, mediumThumbnailWidth = 700, smallThumbnailWidth = 350, smallThumbnailHeight = 250, maxFiles =1 })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right" for="MerchantName"> 名称 </label>
+                            <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" id="MerchantName" name="MerchantName" placeholder="商家名称" class="col-xs-10 col-sm-5" value="@Model.MerchantName" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-4"></div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right" for="PhoneNumber"> 联系电话 </label>
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" id="PhoneNumber" name="PhoneNumber" placeholder="联系电话" class="col-xs-10 col-sm-5" value="@Model.PhoneNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-4"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right" for="OpenTime"> 营业时间 </label>
+                            <div class="col-sm-9">
+                                <div class="clearfix">
+                                    <input type="text" id="OpenTime" name="OpenTime" placeholder="营业时间" class="col-xs-5 col-sm-2" value="@Model.OpenTime" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="description" class="tab-pane">
+                        @*<div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right" for="District"> 所在地区 </label>
+                            <div class="col-sm-9">
+                                @Html.Action("DistrictSelectPartial", "District", new { area = BntWeb.Core.SystemSettings.SystemSettingsModule.Area, controlId = "Merchant", province = Model.Province, city = Model.City, district = Model.District, street = Model.Street })
+                            </div>
+                        </div>
+                        <div class="space-4"></div>*@
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right" for="Address"> 地址 </label>
+                            <input type="hidden" name="Longitude" id="Longitude" value="@Model.Longitude" />
+                            <input type="hidden" name="Latitude" id="Latitude" value="@Model.Latitude"/>
+                            <div class="col-sm-5">
+                                <div class="clearfix">
+                                    <input type="text" id="Address" name="Address" placeholder="输入具体地址" class="col-xs-10 col-sm-10" value="@Model.Address"/>
+                                </div>
+                            </div>
+                            <input type="button" onclick="SeachMap()" value="查看地图"/>
+                        </div>
+                        <div class="space-4"></div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label no-padding-right" for="Address"></label>
+                            <div id="container" class="col-sm-9">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9" style="margin-top: 18px;">
+            <button class="btn btn-info" type="submit" onclick="setText()">
+                <i class="icon-ok bigger-110"></i>
+                保存
+            </button>
+            &nbsp; &nbsp; &nbsp;
+
+            <button class="btn" type="reset">
+                <i class="icon-undo bigger-110"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @Scripts.Render("~/js/ztree")
+    @Scripts.Render("~/js/kindeditor")
+    @Scripts.Render("~/js/admin/jquery-form")
+    <script type="text/javascript">
+        var map = new BMap.Map("container", { enableMapClick: false }); // 创建地图实例
+        var lat = $("#Latitude").val();
+        var lng = $("#Longitude").val();
+        var point = new BMap.Point(lng, lat); //中心坐标
+        map.centerAndZoom(point, 16);
+        var mar = new BMap.Marker(point);
+        map.addOverlay(mar);
+        mar.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+        mar.enableDragging();
+        map.addControl(new BMap.NavigationControl());//控件
+        map.enableScrollWheelZoom(true);
+        mar.addEventListener("dragend", function (e) {
+            alert("当前位置：" + e.point.lng + ", " + e.point.lat);
+        });
+
+
+        function SeachMap() {
+            var myGeo = new BMap.Geocoder();
+            // 将地址解析结果显示在地图上,并调整地图视野
+            myGeo.getPoint($("#Address").val(), function (point) {
+                if (point) {
+                    var allOverlay = map.getOverlays();
+                    for (var i = 0; i < allOverlay.length; i++) {
+                            map.removeOverlay(allOverlay[i]);
+                    }
+                    map.centerAndZoom(point, 16);
+                    var marker = new BMap.Marker(point);
+                    map.addOverlay(marker);
+                    marker.enableDragging();
+                    marker.addEventListener("dragend", function (e) {
+                        $("#Latitude").val(e.point.lat);
+                        $("#Longitude").val(e.point.lng);
+                        var geoc = new BMap.Geocoder();
+                        geoc.getLocation(e.point, function (rs) {
+                            var addComp = rs.addressComponents;
+                            $("#Address").val(addComp.province + addComp.city +addComp.district +addComp.street +addComp.streetNumber);
+                        });
+                    });
+                    marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                    $("#Latitude").val(point.lat);
+                    $("#Longitude").val(point.lng);
+
+                } else {
+                    alert("您选择地址没有解析到结果!");
+                }
+            }, $("#Merchant_City").find("option:selected").text());
+        }
+
+        
+    </script>
+    <script>
+        var url_deleteRelation = "@Url.Action("DeleteRelation", "Merchant", new {area = MerchantModule.Area })";
+        var url_loadMerchant = "@Url.Action("List", "Merchant", new {area = MerchantModule.Area })";
+        var zNodes = typesJson;
+        var typeIds = '@ViewBag.TypeIds';
+        for (var i = 0; i < zNodes.length; i++) {
+            if (typeIds.indexOf(zNodes[i].id) > -1) {
+                zNodes[i].checked = true;
+                zNodes[i].open = true;
+            }
+        }
+</script>
+    <script>
+        var editor = KindEditor.ready(function (K) {
+            editor = K.create('#DetailHtml');
+        });
+        function setText() {
+            editor.sync();
+            $("#Detail").val(editor.html());//原生API
+
+        }
+        
+    </script>
+    @Scripts.Render("~/js/admin/merchant/edit")
+}

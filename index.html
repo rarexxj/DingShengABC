@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="content-language" content="zh-CN"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="author" content="杭州博采网络科技股份有限公司-高端网站建设-http://www.bocweb.cn"/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>鼎盛银庄</title>
+    <script src="/Html/js/public/jQuery.js"></script>
+    <script src="/Html/js/public/vue.js"></script>
+    <script src="/Html/js/public/main.js"></script>
+    <script src="/Html/js/public/swiper.min.js"></script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=0BDWPPDo9jHudqHGOAqT18Hn5eu6WZV8"></script>
+    <link rel="stylesheet" href="/Html/css/reset.css">
+    <link rel="stylesheet" href="/Html/css/swiper.min.css">
+    <link rel="stylesheet" href="/Html/css/main.css">
+    <link rel="stylesheet" href="/Html/css/index.css">
+</head>
+<body style="background-color: #f6f6f6;">
+<div class="index-box" id="index" v-cloak="">
+    <div class="index-header clearfix">
+        <a href="Html/shopsee.html">
+            <div id="allmap"></div>
+            <div class="index-banner-l fl">
+                <span class="index-banner-address fl">选择门店</span>
+                <div class="index-banner-addresslogo fl"></div>
+            </div>
+            <!--<div class="index-banner-l fl">-->
+                <!--<span class="index-banner-address fl">{{mapinfo.city}}</span>-->
+                <!--<div class="index-banner-addresslogo fl"></div>-->
+            <!--</div>-->
+        </a>
+
+        <a href="javascript:;">
+            <div class="index-banner-r fr">
+                <!--<div class="index-bannerlogo2 fl"></div>-->
+                <!--<span class="fl">产品搜索</span>-->
+                <div class="index-bannerlogo3 fl">产品搜索</div>
+            </div>
+        </a>
+        <div class="index-logo">
+        </div>
+    </div>
+    <div class="swiper-container">
+        <ul class="index-banner swiper-wrapper">
+            <li :data-id="banners.ShotUrl.split('|')[1]" :class="['swiper-slide','index-bannerimg',banners.ShotUrl.split('|')[0]=='Goods'?'goods':'',banners.ShotUrl.split('|')[0]=='Article'?'goodscate':'',banners.ShotUrl.split('|')[0]=='Merchants'?'merchants':'']"
+                :style="{backgroundImage: 'url('+banners.CoverImage.RelativePath+')'}" v-for="banners in banner" ></li>
+        </ul>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination">
+        </div>
+    </div>
+    <div class="gold-pricebox">
+        <div class="gold-priceimg" :style="{backgroundImage:'url('+goldprice.BackGroudImage.RelativePath+')'}">
+            <span class="todayprice">今日银价</span>
+            <span class="pricewz"><i>{{goldprice.Price}}</i>元/克</span>
+        </div>
+    </div>
+    <div class="adverbox clearfix">
+        <a href="/Html/search2.html" class="adver fl"
+           :style="{backgroundImage:'url('+protype.data[1].AdvertImage.RelativePath+')'}">
+        </a>
+        <a href="/Html/search.html" class="adver fl"
+           :style="{backgroundImage:'url('+protype.data[0].AdvertImage.RelativePath+')'}">
+        </a>
+    </div>
+    <!--<div class="mingxbox">-->
+        <!--<a class="mingxlogo" href="/Html/inveslist.html"><span class="mingxwz">{{title.data[0]}}</span><span class="seemore">更多></span></a>-->
+        <!--<div class="mingxadverbox">-->
+            <!--<div class="mingxadver" :data-id="adver.data[0].ShotUrl.split('|')[1]"-->
+                 <!--:style="{backgroundImage:'url('+adver.data[0].AdvertImage.RelativePath+')'}"></div>-->
+            <!--<div class="mingxadver" :data-id="adver.data[0].ShotUrl.split('|')[1]"-->
+                 <!--:style="{backgroundImage:'url('+adver.data[1].AdvertImage.RelativePath+')'}"></div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="changxbox">
+        <a class="mingxlogo" href="/Html/costlist.html"><span class="mingxwz">{{title.data[1]}}</span><span class="seemore">更多></span></a>
+        <div class="changxadverbox">
+            <ul class="clearfix changxul">
+                <li class="product1" style="" v-for="goods in pro.Goods">
+                    <a :href="'Html/prodetails.html?id='+goods.Id">
+                        <div class="product-img"
+                             :style="{backgroundImage:'url('+goods.MainImage.RelativePath+')'}"></div>
+                        <div>
+                            <span class="proname">{{goods.Name}}</span>
+                            <span class="proprice">￥<i>{{goods.ShopPrice.toFixed(2)}}</i></span>
+                        </div>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="beian" style="text-align: center;padding-top: 0.1rem;">
+        <a target="_blank" class="clearfix" style="display: inline-block;color:#999;" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010202001099"><img src="/Html/css/img/logo100.png" style="float:left;width:0.4rem;height:0.4rem;margin-top: 0.1rem;"/><p style="float:left;">浙公网安备 33010202001099号</p></a>
+    </div>
+
+    <!--<div class="phonebox">-->
+        <!--<span class="telelogo">客服电话：<i>{{phone.data}}</i></span>-->
+        <!--<a :href="'tel:'+phone.data" class="call">点击拨打</a>-->
+    <!--</div>-->
+    <div class="search-box" id="search_box">
+        <div class="content">
+            <div class="search fl">
+                <div class="close fl"></div>
+                <input type="text" class="text" id="search_alert" placeholder="搜索关键字">
+                <span class="delete"></span>
+            </div>
+            <div class="btn fr">搜索</div>
+        </div>
+        <div class="con">
+            <p>大家都在搜...</p>
+            <ul>
+                <li v-for="tag in taginfo" :data-tag="tag">{{tag}}</li>
+            </ul>
+        </div>
+        <div class="nothing">
+            <div class="tb"></div>
+            <p>抱歉，没有找到符合条件的商品</p>
+        </div>
+    </div>
+    <div class="index-navbox">
+        <!--<ul class="index-nav clearfix">-->
+            <!--<a href="index.html">-->
+                <!--<li class="index-nav1 active fl">首页</li>-->
+            <!--</a>-->
+            <!--<a href="Html/shopmall.html">-->
+                <!--<li class="index-nav2 fl">商城</li>-->
+            <!--</a>-->
+            <!--<a href="##">-->
+                <!--<li class="index-nav3 fl">商家</li>-->
+            <!--</a>-->
+            <!--<a href="Html/my.html">-->
+                <!--<li class="index-nav4 fl">我的</li>-->
+            <!--</a>-->
+        <!--</ul>-->
+        <ul class="index-nav clearfix">
+            <a href="index.html">
+                <li class="index-nav1 active fl">首页</li>
+            </a>
+            <a href="Html/shopmall.html">
+                <li class="index-nav2 fl">商城</li>
+            </a>
+            <a href="Html/my.html">
+                <li class="index-nav4 fl">我的</li>
+            </a>
+        </ul>
+    </div>
+</div>
+<div style="width: 100%;height:1rem;"></div>
+
+
+<div class="new-loading">
+    <ul class="small-loading">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script src="/Html/js/mjs/index.js"></script>
+</body>
+
+</html>

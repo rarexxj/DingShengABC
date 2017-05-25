@@ -1,0 +1,136 @@
+﻿@using System.Web.Optimization
+@using BntWeb.FileSystems.Media
+@using BntWeb.Merchant.Models
+@{
+    ViewBag.Title = MerchantModule.DisplayName;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.SubTitle = "编辑营业员";
+    var merchantList = ViewBag.MerchantList as List<Merchant>;
+}
+@model BntWeb.MemberBase.Models.Member
+    @section Styles {
+        @Styles.Render("~/css/ztree")
+        <style type="text/css">
+            .ace-thumbnails > li {
+                border: 1px solid #ddd;
+            }
+        </style>
+    }
+<form class="form-horizontal" role="form" method="POST" id="MerchantForm" action="@Url.Action("EditOnPost", "SalesPerson", new {area = MerchantModule.Area})">
+    <div class="col-sm-12 widget-container-span" style="padding: 0px;">
+        <div class="widget-box" style="margin: 0px;">
+            <div class="slim-scroll">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label no-padding-right"> 头像 </label>
+                    <div class="col-sm-8 image">
+                        <div class="col-sm-10">
+                            <input type="hidden" value="@ViewBag.MerchantId" name="MerchantId"/>
+                            @Html.Action("UploadPartial", "File", new { area = "SystemSettings", controlId = "Avatar", sourceId = Model.Id, moduleKey = MerchantModule.Key, sourceType = "Avatar", fileType = FileType.Image, isPublic = true, mediumThumbnailHeight = 500, mediumThumbnailWidth = 700, smallThumbnailWidth = 350, smallThumbnailHeight = 250, maxFiles = 4 })
+                        </div>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label no-padding-right" for="NickName"> 姓名 </label>
+                    <input type="hidden" id="Id" name="Id" value="@Model.Id"/>
+                    <div class="col-sm-9">
+                        <div class="clearfix">
+                            <input type="text" id="NickName" name="NickName" placeholder="姓名" class="col-xs-10 col-sm-5" value="@Model.NickName"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label no-padding-right" for="PhoneNumber"> 联系电话 </label>
+                    <div class="col-sm-9">
+                        <div class="clearfix">
+                            <input type="text" id="PhoneNumber" name="PhoneNumber" placeholder="联系电话" class="col-xs-10 col-sm-5" value="@Model.PhoneNumber"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label no-padding-right" for="IDCard"> 身份证号 </label>
+                    <div class="col-sm-9">
+                        <div class="clearfix">
+                            <input type="text" id="IDCard" name="IDCard" placeholder="身份证号" class="col-xs-10 col-sm-5" value="@Model.IDCard"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label no-padding-right" for="Sex"> 性别 </label>
+                    <div class="col-sm-9">
+                        <div class="clearfix">
+                            <select name="Sex" id="Sex">
+                                @if (Model.Sex == BntWeb.MemberBase.Models.SexType.Male)
+                                {
+                                    <option value="1" selected="selected">男</option>
+                                    <option value="2">女</option>
+                                }
+                                else
+                                {
+                                    <option value="1">男</option>
+                                    <option value="2" selected="selected">女</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label no-padding-right" for="Score"> 评分 </label>
+                    <div class="col-sm-9">
+                        <div class="clearfix">
+                            <input type="text" id="Score" name="Score" placeholder="评分" class="col-xs-10 col-sm-5" value="@Model.Score" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9" style="margin-top: 18px;">
+            <button class="btn btn-info" type="submit">
+                <i class="icon-ok bigger-110"></i>
+                保存
+            </button>
+            &nbsp; &nbsp; &nbsp;
+
+            <button class="btn" type="reset">
+                <i class="icon-undo bigger-110"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+@section Scripts{
+@Scripts.Render("~/js/admin/jquery-form")
+        <script>
+            jQuery(function($) {
+                bntToolkit.initForm($("#MerchantForm"), {
+                    Name: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    Commission: {
+                        maxlength: 6
+                    },
+                    CategoryName: {
+                        required: true
+                    }
+                }, beforeSubmit, success);
+            });
+            function success(result, statusText, xhr, $form) {
+                if (!result.Success) {
+                    bntToolkit.error(result.ErrorMessage);
+                } else {
+                    location.href = @Url.Action("List","SalesPerson",new
+                                    {
+                                        id=ViewBag.MerchantId
+                                    });
+                }
+            }
+        </script>
+    }

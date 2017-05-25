@@ -1,0 +1,126 @@
+﻿@using BntWeb.Merchant.Models;
+@using BntWeb.Utility.Extensions
+@model List<BntWeb.Merchant.ViewModels.MerchantMapModel>
+    @{
+        var merchantList = Html.Raw(Model.ToJson());
+    }
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Hello, World</title>
+    <style type="text/css">
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #container {
+            height: 100%;
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=sajvlKcq8p0PAizc0DVEaxSWjZOBXeHV">
+    </script>
+</head>
+
+<body>
+    <div id="container"></div>
+<script type="text/javascript">
+    var map = new BMap.Map("container", {enableMapClick:false});          // 创建地图实例
+    var point = new BMap.Point(120.104006, 30.272804); //中心坐标
+    map.centerAndZoom(point, 18);
+    //map.addControl(new BMap.NavigationControl());//控件
+    //map.addControl(new BMap.ScaleControl());//控件
+    //map.addControl(new BMap.OverviewMapControl());//控件
+    //map.addControl(new BMap.MapTypeControl());//控件
+   
+    map.setCurrentCity("杭州");
+    var merchantList = @merchantList;
+    var totalCount = 0;
+    //添加标注
+    for (var i in merchantList) {
+        if (merchantList.hasOwnProperty(i)) {
+            var x = new BMap.Point(merchantList[i]["Longuitde"], merchantList[i]["Lateitude"]);
+            var marker = new BMap.Marker(x); // 创建标注
+            map.addOverlay(marker);
+
+            var opts = {
+                width : 250,     // 信息窗口宽度
+                height: 80,     // 信息窗口高度
+                title : "门店信息" , // 信息窗口标题
+                enableMessage:true//设置允许信息窗发送短息
+            };
+            var content = merchantList[i]["Name"];
+            addClickHandler(content,marker);
+            totalCount++;
+        }
+    }
+    //浏览器定位
+    var geolocation = new BMap.Geolocation();
+    var nowLong = 0;
+    var nowLate = 0;
+    geolocation.getCurrentPosition(function(r) {
+        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+            var mk = new BMap.Marker(r.point);
+            map.addOverlay(mk);
+
+            mk.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+
+            map.centerAndZoom(r.point, 16);
+            nowLong = r.point.lng;
+            nowLate = r.point.lat;
+            //alert('您的位置：'+r.point.lng+','+r.point.lat);
+        } else {
+            alert('failed' + this.getStatus());
+        }
+    }, { enableHighAccuracy: true });
+    var transit = new BMap.DrivingRoute();
+    //距离，路线规划
+    function addClickHandler(content,marker) {
+        marker.addEventListener("click",function(e){
+            var list = map.getOverlays();
+            for (var i in list) {
+                if (list.hasOwnProperty(i)) {
+                    if (i>totalCount) {
+                        map.removeOverlay(list[i]);
+                    }
+                }
+            }
+            var output = "驾车到"+content+"需要";
+            var searchComplete = function (results){
+                if (transit.getStatus() != BMAP_STATUS_SUCCESS){
+                    return ;
+                }
+                var plan = results.getPlan(0);
+                output += plan.getDuration(true) + "\n";                //获取时间
+                output += "总路程为：" ;
+                output += plan.getDistance(true) + "\n";             //获取距离
+            }
+            transit = new BMap.DrivingRoute(map, {renderOptions: {map: map},
+                onSearchComplete: searchComplete,
+                onPolylinesSet: function(){        
+                    openInfo(output,e);
+                }});
+            transit.search(new BMap.Point(nowLong, nowLate), marker);
+        });
+    }
+
+    //信息窗口
+    function openInfo(content,e){
+        var p = e.target;
+        var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+        var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
+        map.openInfoWindow(infoWindow,point); //开启信息窗口
+    }
+
+
+
+    
+</script>
+</body>
+</html>
